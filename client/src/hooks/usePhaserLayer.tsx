@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPhaserLayer } from "../phaser";
 import { NetworkLayer } from "../dojo/createNetworkLayer";
 import { phaserConfig } from "../phaser/configurePhaser";
+import { usePromiseValue } from "./usePromiseValue";
 
 type Props = {
     networkLayer: NetworkLayer | null;
@@ -21,8 +22,8 @@ export const usePhaserLayer = ({ networkLayer }: Props) => {
     const parentRef = useRef<HTMLElement | null>(null);
     const [{ width, height }, setSize] = useState({ width: 0, height: 0 });
 
-    const { phaserLayer, container } = useMemo(() => {
-        if (!networkLayer) return { container: null, phaserLayer: null };
+    const { phaserLayerPromise, container } = useMemo(() => {
+        if (!networkLayer) return { container: null, phaserLayerPromise: null };
 
         const container = createContainer();
         if (parentRef.current) {
@@ -31,7 +32,7 @@ export const usePhaserLayer = ({ networkLayer }: Props) => {
 
         return {
             container,
-            phaserLayer: createPhaserLayer(networkLayer, {
+            phaserLayerPromise: createPhaserLayer(networkLayer, {
                 ...phaserConfig,
                 scale: {
                     ...phaserConfig.scale,
@@ -45,6 +46,15 @@ export const usePhaserLayer = ({ networkLayer }: Props) => {
 
         // We don't want width/height to recreate phaser layer, so we ignore linter
     }, [networkLayer]);
+
+    useEffect(() => {
+        return () => {
+            phaserLayerPromise?.then((phaserLayer) => phaserLayer.world.dispose());
+            container?.remove();
+        };
+    }, [container, phaserLayerPromise]);
+
+    const phaserLayer = usePromiseValue(phaserLayerPromise);
 
     const ref = useCallback(
         (el: HTMLElement | null) => {

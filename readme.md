@@ -1,6 +1,6 @@
-## Dojo create-react-app 
+## Dojo create-phaser-app
 
-The pattern here is inherited from mud.dev and is a simple example of how to use the dojo engine with create-react-app.
+The pattern here is inherited from mud.dev and is a simple example of how to use the dojo engine with create-phaser-app.
 
 ### Steps to Execute the Example
 

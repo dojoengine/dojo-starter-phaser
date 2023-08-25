@@ -22,12 +22,12 @@ export const move = (layer: PhaserLayer) => {
         .setInteractive({
             useHandCursor: true,
         })
-        .setOrigin(5, 5);
+        .setOrigin(0, 0);
 
     let tween: Phaser.Tweens.Tween | undefined;
 
     phaserScene.input.on("pointerdown", () => {
         spawn(account);
-        soldier.setPosition(phaserScene.input.mousePointer?.x, phaserScene.input.mousePointer?.y);
+        soldier.setPosition(phaserScene.input.mousePointer.worldX, phaserScene.input.mousePointer.worldY);
     });
 };

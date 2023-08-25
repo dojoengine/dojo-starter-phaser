@@ -8,7 +8,7 @@ export const createNetworkLayer = async () => {
     const { components, systemCalls, network } = await setup();
 
     const provider = new RpcProvider({
-        nodeUrl: "http://localhost:5050",
+        nodeUrl: import.meta.env.VITE_PUBLIC_NODE_URL!,
     });
 
     // TODO: Make Burner System

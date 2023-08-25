@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createPhaserLayer } from "../phaser";
 import { NetworkLayer } from "../dojo/createNetworkLayer";
+import { createPhaserLayer } from "../phaser";
 import { phaserConfig } from "../phaser/configurePhaser";
 import { usePromiseValue } from "./usePromiseValue";
 
@@ -16,7 +16,6 @@ const createContainer = () => {
     container.style.overflow = "hidden";
     return container;
 };
-
 
 export const usePhaserLayer = ({ networkLayer }: Props) => {
     const parentRef = useRef<HTMLElement | null>(null);
@@ -45,11 +44,14 @@ export const usePhaserLayer = ({ networkLayer }: Props) => {
         };
 
         // We don't want width/height to recreate phaser layer, so we ignore linter
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [networkLayer]);
 
     useEffect(() => {
         return () => {
-            phaserLayerPromise?.then((phaserLayer) => phaserLayer.world.dispose());
+            phaserLayerPromise?.then((phaserLayer) =>
+                phaserLayer.world.dispose()
+            );
             container?.remove();
         };
     }, [container, phaserLayerPromise]);
@@ -71,4 +73,4 @@ export const usePhaserLayer = ({ networkLayer }: Props) => {
     );
 
     return useMemo(() => ({ ref, phaserLayer }), [ref, phaserLayer]);
-}
+};

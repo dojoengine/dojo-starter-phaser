@@ -1,9 +1,13 @@
-import { SetupNetworkResult } from "./setupNetwork";
-import { Account, InvokeTransactionReceiptResponse, shortString } from "starknet";
 import { EntityIndex, getComponentValue, setComponent } from "@latticexyz/recs";
 import { uuid } from "@latticexyz/utils";
-import { ClientComponents } from "./createClientComponents";
+import {
+    Account,
+    InvokeTransactionReceiptResponse,
+    shortString,
+} from "starknet";
 import { updatePositionWithDirection } from "../utils";
+import { ClientComponents } from "./createClientComponents";
+import { SetupNetworkResult } from "./setupNetwork";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -11,9 +15,7 @@ export function createSystemCalls(
     { execute, contractComponents }: SetupNetworkResult,
     { Position, Moves }: ClientComponents
 ) {
-
     const spawn = async (signer: Account) => {
-
         const entityId = parseInt(signer.address) as EntityIndex;
 
         const positionId = uuid();
@@ -31,19 +33,27 @@ export function createSystemCalls(
         try {
             const tx = await execute(signer, "spawn", []);
 
-            console.log(tx)
-            const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
+            console.log(tx);
+            const receipt = await signer.waitForTransaction(
+                tx.transaction_hash,
+                { retryInterval: 100 }
+            );
 
-            const events = parseEvent(receipt)
-            const entity = parseInt(events[0].entity.toString()) as EntityIndex
+            const events = parseEvent(receipt);
+            const entity = parseInt(events[0].entity.toString()) as EntityIndex;
 
             const movesEvent = events[0] as Moves;
-            setComponent(contractComponents.Moves, entity, { remaining: movesEvent.remaining })
+            setComponent(contractComponents.Moves, entity, {
+                remaining: movesEvent.remaining,
+            });
 
             const positionEvent = events[1] as Position;
-            setComponent(contractComponents.Position, entity, { x: positionEvent.x, y: positionEvent.y })
+            setComponent(contractComponents.Position, entity, {
+                x: positionEvent.x,
+                y: positionEvent.y,
+            });
         } catch (e) {
-            console.log(e)
+            console.log(e);
             Position.removeOverride(positionId);
             Moves.removeOverride(movesId);
         } finally {
@@ -53,54 +63,65 @@ export function createSystemCalls(
     };
 
     const move = async (signer: Account, direction: Direction) => {
-
         const entityId = parseInt(signer.address) as EntityIndex;
 
         const positionId = uuid();
         Position.addOverride(positionId, {
             entity: entityId,
-            value: updatePositionWithDirection(direction, getComponentValue(Position, entityId) as Position),
+            value: updatePositionWithDirection(
+                direction,
+                getComponentValue(Position, entityId) as Position
+            ),
         });
 
         const movesId = uuid();
         Moves.addOverride(movesId, {
             entity: entityId,
-            value: { remaining: (getComponentValue(Moves, entityId)?.remaining || 0) - 1 },
+            value: {
+                remaining:
+                    (getComponentValue(Moves, entityId)?.remaining || 0) - 1,
+            },
         });
 
         try {
             const tx = await execute(signer, "move", [direction]);
 
-            console.log(tx)
-            const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
+            console.log(tx);
+            const receipt = await signer.waitForTransaction(
+                tx.transaction_hash,
+                { retryInterval: 100 }
+            );
 
-            console.log(receipt)
+            console.log(receipt);
 
-            const events = parseEvent(receipt)
-            const entity = parseInt(events[0].entity.toString()) as EntityIndex
+            const events = parseEvent(receipt);
+            const entity = parseInt(events[0].entity.toString()) as EntityIndex;
 
             const movesEvent = events[0] as Moves;
-            setComponent(contractComponents.Moves, entity, { remaining: movesEvent.remaining })
+            setComponent(contractComponents.Moves, entity, {
+                remaining: movesEvent.remaining,
+            });
 
             const positionEvent = events[1] as Position;
-            setComponent(contractComponents.Position, entity, { x: positionEvent.x, y: positionEvent.y })
+            setComponent(contractComponents.Position, entity, {
+                x: positionEvent.x,
+                y: positionEvent.y,
+            });
         } catch (e) {
-            console.log(e)
+            console.log(e);
             Position.removeOverride(positionId);
             Moves.removeOverride(movesId);
         } finally {
             Position.removeOverride(positionId);
             Moves.removeOverride(movesId);
         }
-
     };
 
     return {
         spawn,
-        move
+        move,
     };
 }
-
 
 // TODO: Move types and generalise this
 
@@ -137,15 +158,15 @@ export const parseEvent = (
         throw new Error(`No events found`);
     }
 
-    let events: Array<Moves | Position> = [];
+    const events: Array<Moves | Position> = [];
 
-    for (let raw of receipt.events) {
+    for (const raw of receipt.events) {
         const decodedEventType = shortString.decodeShortString(raw.data[0]);
 
         switch (decodedEventType) {
             case ComponentEvents.Moves:
                 if (raw.data.length < 6) {
-                    throw new Error('Insufficient data for Moves event.');
+                    throw new Error("Insufficient data for Moves event.");
                 }
 
                 const movesData: Moves = {
@@ -159,7 +180,7 @@ export const parseEvent = (
 
             case ComponentEvents.Position:
                 if (raw.data.length < 7) {
-                    throw new Error('Insufficient data for Position event.');
+                    throw new Error("Insufficient data for Position event.");
                 }
 
                 const positionData: Position = {
@@ -173,7 +194,7 @@ export const parseEvent = (
                 break;
 
             default:
-                throw new Error('Unsupported event type.');
+                throw new Error("Unsupported event type.");
         }
     }
 

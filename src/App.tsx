@@ -21,7 +21,6 @@ function App() {
 
   return (
     <div id="game">
-
       <PhaserLayer networkLayer={networkLayer} />
 
       <UI />

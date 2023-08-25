@@ -5,7 +5,7 @@ import { Account, num } from "starknet";
 import { GraphQLClient } from 'graphql-request';
 import { getSdk } from '../generated/graphql';
 
-export const WORLD_ADDRESS = "0x1b970717f12878ca36ed5c4448f420d8c148ee55aab000803caaa25c4f58e9e"
+export const WORLD_ADDRESS = "0x398c6b4f479e2a6181ae895ad34333b44e419e48098d2a9622f976216d044dd"
 
 export type SetupNetworkResult = Awaited<ReturnType<typeof setupNetwork>>;
 

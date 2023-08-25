@@ -1,41 +1,30 @@
-import Phaser from 'phaser'
-
-import HelloWorldScene from './scenes/HelloWorldScene'
+import { createPhaserEngine } from "@latticexyz/phaserx";
 import { NetworkLayer } from '../dojo/createNetworkLayer';
 import { registerSystems } from './systems/registerSystems';
+import { namespaceWorld } from '@latticexyz/recs';
 
 export type PhaserLayer = Awaited<ReturnType<typeof createPhaserLayer>>;
+type PhaserEngineConfig = Parameters<typeof createPhaserEngine>[0];
 
-type Props = {
-    networkLayer: NetworkLayer;
-};
+// type Props = {
+//     networkLayer: NetworkLayer;
+// };
 
-export const createPhaserLayer = ({ networkLayer }: Props) => {
+export const createPhaserLayer = async (networkLayer: NetworkLayer, phaserConfig: PhaserEngineConfig) => {
 
-    const config: Phaser.Types.Core.GameConfig = {
-        type: Phaser.AUTO,
-        parent: 'game',
-        backgroundColor: '#282c34',
-        scale: {
-            mode: Phaser.Scale.ScaleModes.RESIZE,
-            width: window.innerWidth,
-            height: window.innerHeight,
-        },
-        physics: {
-            default: 'arcade',
-            arcade: {
-                gravity: { y: 200 },
-            },
-        },
-        scene: [HelloWorldScene],
-    }
+    const world = namespaceWorld(networkLayer.world, "phaser");
+    const { game, scenes, dispose: disposePhaser } = await createPhaserEngine(phaserConfig);
+    world.registerDisposer(disposePhaser);
+
 
     const components = {};
 
     const layer = {
-        game: new Phaser.Game(config),
         networkLayer,
-        components
+        world,
+        game,
+        scenes,
+        components,
     }
 
     registerSystems(layer);

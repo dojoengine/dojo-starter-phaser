@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { createPhaserLayer } from "../phaser";
 import { NetworkLayer } from "../dojo/createNetworkLayer";
+import { phaserConfig } from "../phaser/configurePhaser";
 
 type Props = {
     networkLayer: NetworkLayer | null;
@@ -18,7 +19,7 @@ const createContainer = () => {
 
 export const usePhaserLayer = ({ networkLayer }: Props) => {
     const parentRef = useRef<HTMLElement | null>(null);
-
+    const [{ width, height }, setSize] = useState({ width: 0, height: 0 });
 
     const { phaserLayer, container } = useMemo(() => {
         if (!networkLayer) return { container: null, phaserLayer: null };
@@ -30,7 +31,16 @@ export const usePhaserLayer = ({ networkLayer }: Props) => {
 
         return {
             container,
-            phaserLayer: createPhaserLayer({ networkLayer })
+            phaserLayer: createPhaserLayer(networkLayer, {
+                ...phaserConfig,
+                scale: {
+                    ...phaserConfig.scale,
+                    parent: container,
+                    mode: Phaser.Scale.NONE,
+                    width,
+                    height,
+                },
+            }),
         };
 
         // We don't want width/height to recreate phaser layer, so we ignore linter

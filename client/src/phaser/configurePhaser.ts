@@ -30,6 +30,7 @@ const mainMap = defineMapConfig({
 export const phaserConfig = {
     sceneConfig: {
         [Scenes.Main]: defineSceneConfig({
+
             assets: {
                 [Assets.Tileset]: {
                     type: AssetType.Image,

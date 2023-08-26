@@ -1,33 +1,62 @@
+import { Has, defineComponentSystem, defineSystem, getComponentValueStrict } from "@latticexyz/recs";
 import { PhaserLayer } from "..";
-import { Animations, Sprites } from "../constants";
+import { Direction } from "../../dojo/createSystemCalls";
 
 export const move = (layer: PhaserLayer) => {
 
     const {
-        game,
         world,
         scenes: {
-            Main: { phaserScene, config },
+            Main: { objectPool, phaserScene, input },
         },
         networkLayer: {
-            systemCalls: { spawn },
+            systemCalls: { move },
+            components: { Position },
             account
         },
     } = layer;
 
-    const soldier = phaserScene.add
-        .sprite(0, 0, "soldier")
-        .play(Animations.SwordsmanIdle)
-        .setPosition(5, 5)
-        .setInteractive({
-            useHandCursor: true,
+    input.onKeyPress(
+        keys => keys.has("W"),
+        () => {
+            move(account, Direction.Up);
+        });
+
+    input.onKeyPress(
+        keys => keys.has("A"),
+        () => {
+            move(account, Direction.Left);
+        }
+    );
+
+    input.onKeyPress(
+        keys => keys.has("S"),
+        () => {
+            move(account, Direction.Down);
+        }
+    );
+
+    input.onKeyPress(
+        keys => keys.has("D"),
+        () => {
+            move(account, Direction.Right);
+        }
+    );
+
+    defineSystem(world, [Has(Position)], ({ entity }) => {
+        const position = getComponentValueStrict(Position, entity);
+
+        console.log(entity.toString())
+
+        const player = objectPool.get(entity, "Sprite")
+
+        player.setComponent({
+            id: 'position',
+            once: (sprite) => {
+                sprite.setPosition(position?.x, position?.y);
+                // camera.centerOn(currentValue?.x!, currentValue?.y!);
+            }
         })
-        .setOrigin(0, 0);
 
-    let tween: Phaser.Tweens.Tween | undefined;
-
-    phaserScene.input.on("pointerdown", () => {
-        spawn(account);
-        soldier.setPosition(phaserScene.input.mousePointer.worldX, phaserScene.input.mousePointer.worldY);
     });
 };

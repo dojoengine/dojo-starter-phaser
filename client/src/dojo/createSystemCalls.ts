@@ -4,6 +4,7 @@ import { EntityIndex, getComponentValue, setComponent } from "@latticexyz/recs";
 import { uuid } from "@latticexyz/utils";
 import { ClientComponents } from "./createClientComponents";
 import { updatePositionWithDirection } from "../utils";
+import { POSITION_OFFSET } from "../phaser/constants";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -19,13 +20,13 @@ export function createSystemCalls(
         const positionId = uuid();
         Position.addOverride(positionId, {
             entity: entityId,
-            value: { x: 10, y: 10 },
+            value: { x: 0, y: 0 },
         });
 
         const movesId = uuid();
         Moves.addOverride(movesId, {
             entity: entityId,
-            value: { remaining: 10 },
+            value: { remaining: 100 },
         });
 
         try {
@@ -165,8 +166,8 @@ export const parseEvent = (
                 const positionData: Position = {
                     type: ComponentEvents.Position,
                     entity: raw.data[2],
-                    x: Number(raw.data[5]),
-                    y: Number(raw.data[6]),
+                    x: Number(raw.data[5]) - POSITION_OFFSET,
+                    y: Number(raw.data[6]) - POSITION_OFFSET,
                 };
 
                 events.push(positionData);

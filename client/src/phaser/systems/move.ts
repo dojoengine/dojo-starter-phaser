@@ -1,60 +1,45 @@
-import { Has, defineComponentSystem, defineSystem, getComponentValueStrict } from "@latticexyz/recs";
+import { Has, defineEnterSystem, defineSystem, getComponentValueStrict } from "@latticexyz/recs";
 import { PhaserLayer } from "..";
-import { Direction } from "../../dojo/createSystemCalls";
+import { tileCoordToPixelCoord } from "@latticexyz/phaserx";
+import { Animations, TILE_HEIGHT, TILE_WIDTH } from "../constants";
 
 export const move = (layer: PhaserLayer) => {
 
     const {
         world,
         scenes: {
-            Main: { objectPool, phaserScene, input },
+            Main: { objectPool, camera },
         },
         networkLayer: {
-            systemCalls: { move },
-            components: { Position },
-            account
+            components: { Position }
         },
     } = layer;
 
-    input.onKeyPress(
-        keys => keys.has("W"),
-        () => {
-            move(account, Direction.Up);
+    defineEnterSystem(world, [Has(Position)], ({ entity }) => {
+        const playerObj = objectPool.get(entity, "Sprite");
+
+        playerObj.setComponent({
+            id: 'animation',
+            once: (sprite) => {
+                sprite.play(Animations.SwordsmanIdle);
+            }
         });
-
-    input.onKeyPress(
-        keys => keys.has("A"),
-        () => {
-            move(account, Direction.Left);
-        }
-    );
-
-    input.onKeyPress(
-        keys => keys.has("S"),
-        () => {
-            move(account, Direction.Down);
-        }
-    );
-
-    input.onKeyPress(
-        keys => keys.has("D"),
-        () => {
-            move(account, Direction.Right);
-        }
-    );
+    });
 
     defineSystem(world, [Has(Position)], ({ entity }) => {
         const position = getComponentValueStrict(Position, entity);
-
+        const pixelPosition = tileCoordToPixelCoord(position, TILE_WIDTH, TILE_HEIGHT);
         console.log(entity.toString())
+        console.log(pixelPosition?.x, pixelPosition?.y)
 
         const player = objectPool.get(entity, "Sprite")
 
         player.setComponent({
             id: 'position',
             once: (sprite) => {
-                sprite.setPosition(position?.x, position?.y);
-                // camera.centerOn(currentValue?.x!, currentValue?.y!);
+                sprite.setPosition(pixelPosition?.x, pixelPosition?.y);
+
+                camera.centerOn(pixelPosition?.x!, pixelPosition?.y!);
             }
         })
 

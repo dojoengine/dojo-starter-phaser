@@ -1,24 +1,50 @@
-## Dojo create-phaser-app
+## Integrate Phaser with Dojo: A Quick Start Guide
 
-This uses the amazing libraries create by [Lattice](https://lattice.xyz/)
+Dive into this straightforward example to understand how to meld Phaser with Dojo.
 
-[PhaserX](https://github.com/latticexyz/mud/tree/main/packages/phaserx)
-[recs](https://github.com/latticexyz/mud/tree/main/packages/recs)
+This integration taps into the powerful libraries designed by [Lattice](https://lattice.xyz/):
 
-### Steps to Execute the Example
+- [PhaserX](https://github.com/latticexyz/mud/tree/main/packages/phaserx)
+- [recs](https://github.com/latticexyz/mud/tree/main/packages/recs)
 
-Firstly, clone the [dojo-starter](https://github.com/dojoengine/dojo-starter) project and follow the given instructions to ensure it's functioning correctly. This step is crucial as this client displays data obtained from the project.
+### Initial Setup
 
-Subsequently, clone this project and execute the following commands in the terminal:
+The repository already contains the `dojo-starter` as a submodule. Feel free to remove it if you prefer.
+
+**Prerequisites:** First and foremost, ensure that Dojo is installed on your system. If it isn't, you can easily get it set up with:
 
 ```console
-yarn
-
-yarn generate
-
-yarn dev
+curl -L https://install.dojoengine.org | bash
 ```
 
-### Notes
+Followed by:
 
-This is just a simple example of how to setup a project, but in by no means is the only way.
+```console
+dojoup    
+```
+
+For an in-depth setup guide, consult the [Dojo book](https://book.dojoengine.org/getting-started/quick-start.html).
+
+### Launch the Example in Under 30 Seconds
+
+After cloning the project, execute the following:
+
+1. **Terminal 1**:
+
+```console
+cd dojo-starter && katana --disable-fee
+```
+
+2. **Terminal 2**:
+
+```console
+cd dojo-starter && sozo build && sozo migrate
+```
+
+3. **Terminal 3**:
+
+```console
+cd client && yarn && yarn dev
+```
+
+Upon completion, launch your browser and navigate to http://localhost:5173/. You'll be greeted by the running example!

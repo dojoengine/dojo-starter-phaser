@@ -55,6 +55,8 @@ export function createSystemCalls(
 
     const move = async (signer: Account, direction: Direction) => {
 
+        console.log(signer.address)
+
         const entityId = parseInt(signer.address) as EntityIndex;
 
         const positionId = uuid();

@@ -7,7 +7,10 @@ type Props = {
     networkLayer: NetworkLayer | null;
 };
 
+// TODO: this is where we need to set the burner account from local storage.
+
 export const PhaserLayer = ({ networkLayer }: Props) => {
+
     const { phaserLayer, ref } = usePhaserLayer({ networkLayer });
 
     useEffect(() => {

@@ -5,12 +5,10 @@ import { PhaserLayer } from "../phaser";
 export type Store = {
     networkLayer: NetworkLayer | null;
     phaserLayer: PhaserLayer | null;
-    devMode: boolean;
 };
 
 export const store = create<Store>(() => ({
     networkLayer: null,
-    phaserLayer: null,
-    devMode: false,
+    phaserLayer: null
 }));
 

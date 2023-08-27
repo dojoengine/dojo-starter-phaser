@@ -4,22 +4,18 @@ import { PhaserLayer } from "../phaser";
 import { store } from "../store/store";
 import { useBurner } from "@dojoengine/create-burner";
 
-export type UIStore = {
-    networkLayer: NetworkLayer;
-    phaserLayer: PhaserLayer;
-    devMode: boolean;
-};
+export type UIStore = ReturnType<typeof useDojo>;
 
 export const useDojo = () => {
-    const { networkLayer, phaserLayer, devMode } = store();
+    const { networkLayer, phaserLayer } = store();
 
     const provider = new RpcProvider({
-        nodeUrl: "http://localhost:5050",
+        nodeUrl: import.meta.env.VITE_PUBLIC_NODE_URL,
     });
 
+    // todo: allow connection with wallet providers
     const masterAccount = new Account(provider, import.meta.env.VITE_PUBLIC_MASTER_ADDRESS!, import.meta.env.VITE_PUBLIC_MASTER_PRIVATE_KEY!)
-
-    const { account } = useBurner(
+    const { create, list, get, account, select, isDeploying } = useBurner(
         {
             masterAccount: masterAccount,
             accountClassHash: import.meta.env.VITE_PUBLIC_ACCOUNT_CLASS_HASH!,
@@ -32,8 +28,15 @@ export const useDojo = () => {
     }
 
     return {
-        networkLayer,
-        phaserLayer,
-        devMode,
-    } as UIStore;
+        networkLayer: networkLayer as NetworkLayer,
+        phaserLayer: phaserLayer as PhaserLayer,
+        account: {
+            create,
+            list,
+            get,
+            account: account ? account : masterAccount,
+            select,
+            isDeploying
+        }
+    }
 };

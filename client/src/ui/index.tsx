@@ -1,9 +1,7 @@
-import React from "react";
+import styled from "styled-components";
 import { store } from "../store/store";
-// import { Controls } from "./Controls";
-// import { LoadingScreen } from "./LoadingScreen";
 import { Wrapper } from "./wrapper";
-// import { Title } from "./Title";
+import { SpawnBtn } from "./spawnbtn";
 
 export const UI = () => {
     const layers = store((state) => {
@@ -17,10 +15,21 @@ export const UI = () => {
 
     return (
         <Wrapper>
-            {/* <LoadingScreen />
-      <Controls />
+            <HeaderContainer>
+                <SpawnBtn />
 
-      <Title /> */}
+            </HeaderContainer>
         </Wrapper>
     );
 };
+
+const HeaderContainer = styled.div`
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    display: flex;
+    flex-direaction: row;
+    gap: 20px;
+`;

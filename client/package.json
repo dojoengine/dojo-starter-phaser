@@ -1,5 +1,5 @@
 {
-  "name": "react-example",
+  "name": "react-phaser-example",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -8,12 +8,14 @@
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "codegen": "graphql-codegen"
+    "codegen": "graphql-codegen",
+    "components": "npx @dojoengine/core ../dojo-starter/target/dev/manifest.json src/dojo/contractComponents.ts"
   },
   "dependencies": {
-    "@dojoengine/core": "^0.0.15",
-    "@dojoengine/create-burner": "^0.0.3",
+    "@dojoengine/core": "^0.0.17",
+    "@dojoengine/create-burner": "^0.0.18",
     "@dojoengine/react": "^0.0.3",
+    "@dojoengine/utils": "^0.0.2",
     "@latticexyz/phaserx": "^1.43.0",
     "@latticexyz/recs": "^1.43.0",
     "@latticexyz/utils": "^1.43.0",
@@ -28,7 +30,7 @@
     "react-dom": "^18.2.0",
     "rxjs": "^7.8.1",
     "simplex-noise": "^4.0.1",
-    "starknet": "^5.14.1",
+    "starknet": "^5.19.5",
     "styled-components": "^6.0.7",
     "zustand": "^4.4.1"
   },

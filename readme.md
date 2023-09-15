@@ -29,6 +29,12 @@ For an in-depth setup guide, consult the [Dojo book](https://book.dojoengine.org
 
 After cloning the project, execute the following:
 
+0. **init submodule**
+
+```
+git submodule update --init --recursive
+```
+
 1. **Terminal 1**:
 
 ```console
@@ -45,6 +51,12 @@ cd dojo-starter && sozo build && sozo migrate
 
 ```console
 cd client && yarn && yarn dev
+```
+
+or if using bun
+
+```console
+cd client && bun install && bun dev
 ```
 
 Upon completion, launch your browser and navigate to http://localhost:5173/. You'll be greeted by the running example!

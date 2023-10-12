@@ -1,7 +1,7 @@
 {
   "name": "react-phaser-example",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,13 +12,13 @@
     "components": "npx @dojoengine/core ../dojo-starter/target/dev/manifest.json src/dojo/contractComponents.ts"
   },
   "dependencies": {
-    "@dojoengine/core": "^0.0.17",
-    "@dojoengine/create-burner": "^0.0.18",
-    "@dojoengine/react": "^0.0.3",
-    "@dojoengine/utils": "^0.0.2",
-    "@latticexyz/phaserx": "^1.43.0",
-    "@latticexyz/recs": "^1.43.0",
-    "@latticexyz/utils": "^1.43.0",
+    "@dojoengine/core": "^0.1.2",
+    "@dojoengine/create-burner": "^0.1.2",
+    "@dojoengine/utils": "^0.1.2",
+    "@latticexyz/react": "^2.0.0-next.11",
+    "@latticexyz/recs": "^2.0.0-next.11",
+    "@latticexyz/utils": "^2.0.0-next.1",
+    "@latticexyz/phaserx": "^2.0.0-next.11",
     "ethers": "^5.7.2",
     "events": "^3.3.0",
     "graphql": "^16.7.1",

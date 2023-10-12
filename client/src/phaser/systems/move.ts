@@ -1,4 +1,4 @@
-import { Has, defineEnterSystem, defineSystem, getComponentValueStrict } from "@latticexyz/recs";
+import { Has, defineEnterSystem, defineSystem, getComponentValueStrict, EntityIndex } from "@latticexyz/recs";
 import { PhaserLayer } from "..";
 import { tileCoordToPixelCoord } from "@latticexyz/phaserx";
 import { Animations, POSITION_OFFSET, TILE_HEIGHT, TILE_WIDTH } from "../constants";
@@ -15,29 +15,32 @@ export const move = (layer: PhaserLayer) => {
         },
     } = layer;
 
-    defineEnterSystem(world, [Has(Position)], ({ entity }) => {
-        const playerObj = objectPool.get(entity, "Sprite");
+    defineEnterSystem(world, [Has(Position)], ({ entity }: any) => {
+        const playerObj = objectPool.get(entity.toString(), "Sprite");
 
         playerObj.setComponent({
             id: 'animation',
-            once: (sprite) => {
+            once: (sprite: any) => {
                 sprite.play(Animations.SwordsmanIdle);
             }
         });
     });
 
-    defineSystem(world, [Has(Position)], ({ entity }) => {
-        const position = getComponentValueStrict(Position, entity);
-        const offset_position = { x: position.x - POSITION_OFFSET, y: position.y - POSITION_OFFSET };
-        const pixelPosition = tileCoordToPixelCoord(offset_position, TILE_WIDTH, TILE_HEIGHT);
-        console.log(entity.toString())
-        console.log(pixelPosition?.x, pixelPosition?.y)
+    defineSystem(world, [Has(Position)], ({ entity }: any) => {
 
-        const player = objectPool.get(entity, "Sprite")
+        const position = getComponentValueStrict(Position, entity.toString());
+
+        const offsetPosition = { x: position.x, y: position.y };
+
+        const pixelPosition = tileCoordToPixelCoord(offsetPosition, TILE_WIDTH, TILE_HEIGHT);
+
+        const player = objectPool.get(entity.toString(), "Sprite")
 
         player.setComponent({
             id: 'position',
-            once: (sprite) => {
+            once: (sprite: any) => {
+
+                console.log("sprite", sprite)
                 sprite.setPosition(pixelPosition?.x, pixelPosition?.y);
 
                 camera.centerOn(pixelPosition?.x, pixelPosition?.y);

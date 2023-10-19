@@ -4,7 +4,6 @@ import { EntityIndex, getComponentValue } from "@latticexyz/recs";
 import { uuid } from "@latticexyz/utils";
 import { ClientComponents } from "./createClientComponents";
 import { updatePositionWithDirection } from "../utils";
-import { POSITION_OFFSET } from "../phaser/constants";
 import { getEvents, setComponentsFromEvents } from "@dojoengine/utils";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
@@ -15,26 +14,30 @@ export function createSystemCalls(
 ) {
 
     const spawn = async (signer: Account) => {
-        const entityId = parseInt(signer.address) as EntityIndex;
+
+        const entityId = signer.address.toString() as EntityIndex;
 
         const positionId = uuid();
         Position.addOverride(positionId, {
             entity: entityId,
-            value: { x: 1000, y: 1000 },
+            value: { x: 10, y: 10 },
         });
 
         const movesId = uuid();
         Moves.addOverride(movesId, {
             entity: entityId,
-            value: { remaining: 100 },
+            value: { remaining: 10 },
         });
 
         try {
-            const tx = await execute(signer, "spawn", []);
-
-            console.log(tx)
-            const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
-            setComponentsFromEvents(contractComponents, getEvents(receipt));
+            const tx = await execute(signer, "actions", 'spawn', []);
+            setComponentsFromEvents(contractComponents,
+                getEvents(
+                    await signer.waitForTransaction(tx.transaction_hash,
+                        { retryInterval: 100 }
+                    )
+                )
+            );
 
         } catch (e) {
             console.log(e)
@@ -47,13 +50,12 @@ export function createSystemCalls(
     };
 
     const move = async (signer: Account, direction: Direction) => {
-
-        const entityId = parseInt(signer.address) as EntityIndex;
+        const entityId = signer.address.toString() as EntityIndex;
 
         const positionId = uuid();
         Position.addOverride(positionId, {
             entity: entityId,
-            value: updatePositionWithDirection(direction, getComponentValue(Position, entityId) as any),
+            value: updatePositionWithDirection(direction, getComponentValue(Position, entityId)),
         });
 
         const movesId = uuid();
@@ -63,11 +65,14 @@ export function createSystemCalls(
         });
 
         try {
-            const tx = await execute(signer, "move", [direction]);
-
-            console.log(tx)
-            const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
-            setComponentsFromEvents(contractComponents, getEvents(receipt));
+            const tx = await execute(signer, "actions", "move", [direction]);
+            setComponentsFromEvents(contractComponents,
+                getEvents(
+                    await signer.waitForTransaction(tx.transaction_hash,
+                        { retryInterval: 100 }
+                    )
+                )
+            );
 
         } catch (e) {
             console.log(e)
@@ -87,8 +92,8 @@ export function createSystemCalls(
 }
 
 export enum Direction {
-    Left = 0,
-    Right = 1,
-    Up = 2,
-    Down = 3,
+    Left = 1,
+    Right = 2,
+    Up = 3,
+    Down = 4,
 }

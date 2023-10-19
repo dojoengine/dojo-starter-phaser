@@ -13,8 +13,6 @@ export function createSystemCalls(
     { Position, Moves }: ClientComponents
 ) {
 
-    const { VITE_PUBLIC_WORLD_ADDRESS } = import.meta.env;
-
     const spawn = async (signer: Account) => {
 
         const entityId = signer.address.toString() as EntityIndex;
@@ -32,11 +30,14 @@ export function createSystemCalls(
         });
 
         try {
-            const tx = await execute(signer, "player_actions", 'spawn', [VITE_PUBLIC_WORLD_ADDRESS]);
-
-            console.log(tx)
-            const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
-            setComponentsFromEvents(contractComponents, getEvents(receipt));
+            const tx = await execute(signer, "actions", 'spawn', []);
+            setComponentsFromEvents(contractComponents,
+                getEvents(
+                    await signer.waitForTransaction(tx.transaction_hash,
+                        { retryInterval: 100 }
+                    )
+                )
+            );
 
         } catch (e) {
             console.log(e)
@@ -49,16 +50,12 @@ export function createSystemCalls(
     };
 
     const move = async (signer: Account, direction: Direction) => {
-
         const entityId = signer.address.toString() as EntityIndex;
-
-        console.log("direction", direction)
-        console.log("getComponentValue", getComponentValue(Position, entityId))
 
         const positionId = uuid();
         Position.addOverride(positionId, {
             entity: entityId,
-            value: updatePositionWithDirection(direction, getComponentValue(Position, entityId) as any),
+            value: updatePositionWithDirection(direction, getComponentValue(Position, entityId)),
         });
 
         const movesId = uuid();
@@ -68,11 +65,14 @@ export function createSystemCalls(
         });
 
         try {
-            const tx = await execute(signer, "player_actions", "move", [VITE_PUBLIC_WORLD_ADDRESS, direction]);
-
-            console.log(tx)
-            const receipt = await signer.waitForTransaction(tx.transaction_hash, { retryInterval: 100 })
-            setComponentsFromEvents(contractComponents, getEvents(receipt));
+            const tx = await execute(signer, "actions", "move", [direction]);
+            setComponentsFromEvents(contractComponents,
+                getEvents(
+                    await signer.waitForTransaction(tx.transaction_hash,
+                        { retryInterval: 100 }
+                    )
+                )
+            );
 
         } catch (e) {
             console.log(e)

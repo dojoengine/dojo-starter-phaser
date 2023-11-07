@@ -1,3 +1,5 @@
+> ARCHIVED: Moved to [Dojo.js](https://github.com/dojoengine/dojo.js)
+
 ## Integrate Phaser with Dojo: A Quick Start Guide
 
 Dive into this straightforward example to understand how to meld Phaser with Dojo.
@@ -20,7 +22,7 @@ curl -L https://install.dojoengine.org | bash
 Followed by:
 
 ```console
-dojoup    
+dojoup
 ```
 
 For an in-depth setup guide, consult the [Dojo book](https://book.dojoengine.org/getting-started/quick-start.html).

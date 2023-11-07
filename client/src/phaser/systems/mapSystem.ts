@@ -22,11 +22,11 @@ export function mapSystem(layer: PhaserLayer) {
 
             putTileAt(coord, Tileset.Grass, "Background");
 
-            if (seed >= 0.45) {
-                putTileAt(coord, Tileset.Mountains, "Foreground");
-            } else if (seed < -0.45) {
-                putTileAt(coord, Tileset.Forest, "Foreground");
-            }
+            // if (seed >= 0.45) {
+            //     putTileAt(coord, Tileset.Mountains, "Foreground");
+            // } else if (seed < -0.45) {
+            //     putTileAt(coord, Tileset.Forest, "Foreground");
+            // }
         }
     }
 }
